@@ -1,0 +1,12 @@
+Package: minibioc
+Title: Create a mini Bioconductor package repository
+Version: 0.0.1
+Authors@R: 
+    person("Marcel", "Ramos", , "marcel.ramos@sph.cuny.edu", c("aut", "cre"))
+Description: Replicate the Bioconductor package repository from source
+    package directories. Create source and binary tarballs for a set of
+    packages. Build the packages' HTML manual pages.
+License: Artistic-2.0
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.3.2
