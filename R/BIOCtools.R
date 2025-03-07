@@ -1,25 +1,95 @@
-.LOCAL_BIOC_SRC_BASE <- normalizePath("~/minibioc/packages/3.20/bioc")
-
-BIOC_local_src_area <-
-    function(src_base = .LOCAL_BIOC_SRC_BASE)
-        paste0("file:///", src_base)
-
-BIOC_create_local_src_area <-
-    function()
-        dir.create(
-            file.path(
-                utils::contrib.url(.LOCAL_BIOC_SRC_BASE), "Meta"
-            ), recursive = TRUE
+local_type_area <- function(
+    base_repo_dir = minibioc_base_dir(),
+    version = BiocManager::version(),
+    type = getOption("pkgType"),
+    uri = FALSE
+) {
+    paste0(
+        if (uri) "file://",
+        file.path(
+            base_repo_dir,
+            "packages",
+            version,
+            if (identical(type, "source"))
+                "bioc"
+            else
+                file.path("container-binaries", "bioconductor_docker")
         )
+    )
+}
 
-BIOC_aliases_db <-
-    function()
-        tools:::read_CRAN_object(
-            BIOC_local_src_area(), "src/contrib/Meta/aliases.rds"
-        )
+create_local_type_area <- function(
+    base_repo_dir = minibioc_base_dir(),
+    version = BiocManager::version(),
+    type = getOption("pkgType"),
+    include.Meta = TRUE,
+    dry.run = TRUE
+) {
+    version_repo_dir <- local_type_area(
+        base_repo_dir = base_repo_dir,
+        version = version,
+        type = type,
+        uri = FALSE
+    )
+    repo_dir <-  file.path(
+        utils::contrib.url(version_repo_dir),
+        if (include.Meta && identical(type, "source")) "Meta" else ""
+    )
+    if (!dry.run & !dir.exists(repo_dir))
+        dir.create(repo_dir, recursive = TRUE)
+    repo_dir
+}
 
-BIOC_rdxrefs_db <-
-    function()
-        tools:::read_CRAN_object(
-            BIOC_local_src_area(), "src/contrib/Meta/rdxrefs.rds"
+read_aliases_db <- function(
+    base_repo_dir = minibioc_base_dir(),
+    version = BiocManager::version()
+) {
+    version_repo_dir <- create_local_type_area(
+        base_repo_dir = base_repo_dir,
+        version = version,
+        type = "source",
+        include.Meta = TRUE,
+        dry.run = TRUE
+    )
+    aliases_db_file <- file.path(version_repo_dir, "aliases.rds")
+    if (!file.exists(aliases_db_file))
+        stop(
+            "aliases.rds file not found in ", version_repo_dir
         )
+    tools:::read_CRAN_object(
+        local_type_area(
+            base_repo_dir = base_repo_dir,
+            version = version,
+            type = "source",
+            uri = TRUE
+        ),
+        "src/contrib/Meta/aliases.rds"
+    )
+}
+
+read_rdxrefs_db <- function(
+    base_repo_dir = minibioc_base_dir(),
+    version = BiocManager::version()
+) {
+    version_repo_dir <- create_local_type_area(
+        base_repo_dir = base_repo_dir,
+        version = version,
+        type = "source",
+        include.Meta = TRUE,
+        dry.run = TRUE
+    )
+    rdxrefs_file <- file.path(version_repo_dir, "rdxrefs.rds")
+    if (!file.exists(rdxrefs_file))
+        stop(
+            "rdxrefs.rds file not found in ", version_repo_dir
+        )
+    tools:::read_CRAN_object(
+        local_type_area(
+            base_repo_dir = base_repo_dir,
+            version = version,
+            type = "source",
+            uri = TRUE
+        ),
+        "src/contrib/Meta/rdxrefs.rds"
+    )
+}
