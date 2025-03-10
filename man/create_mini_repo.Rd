@@ -50,8 +50,8 @@ options(repos = c(biocBin = repo_bin_path, getOption("repos")))
 ## run in parallel
 library(BiocParallel)
 
-bpparam <- BiocParallel::MulticoreParam(workers = 12)
-BiocParallel::register(bpparam)
+bpparam <- MulticoreParam(workers = 12)
+register(bpparam)
 
 bplapply(
     bioc_sub_pkgs,
