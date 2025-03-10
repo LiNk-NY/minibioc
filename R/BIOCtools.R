@@ -40,21 +40,22 @@ create_local_type_area <- function(
     repo_dir
 }
 
-read_aliases_db <- function(
+#' @export
+read_CRAN_rds <- function(
+    rds_db = c("aliases.rds", "rdxrefs.rds"),
     base_repo_dir = minibioc_base_dir(),
     version = BiocManager::version()
 ) {
-    version_repo_dir <- create_local_type_area(
-        base_repo_dir = base_repo_dir,
-        version = version,
-        type = "source",
-        include.Meta = TRUE,
-        dry.run = TRUE
+    rds_db <- match.arg(rds_db)
+    stopifnot(
+        isScalarCharacter(rds_db),
+        isScalarCharacter(base_repo_dir),
+        is.package_version(version) || isScalarCharacter(version)
     )
-    aliases_db_file <- file.path(version_repo_dir, "aliases.rds")
-    if (!file.exists(aliases_db_file))
+    rds_db_file <- .rds_file_path(rds_file, base_repo_dir, version)
+    if (!file.exists(rds_db_file))
         stop(
-            "aliases.rds file not found in ", version_repo_dir
+            rds_file, " file not found in ", version_repo_dir
         )
     tools:::read_CRAN_object(
         local_type_area(
@@ -63,33 +64,21 @@ read_aliases_db <- function(
             type = "source",
             uri = TRUE
         ),
-        "src/contrib/Meta/aliases.rds"
+        file.path(
+            "src/contrib/Meta", rds_file
+        )
     )
 }
 
-read_rdxrefs_db <- function(
-    base_repo_dir = minibioc_base_dir(),
-    version = BiocManager::version()
-) {
-    version_repo_dir <- create_local_type_area(
-        base_repo_dir = base_repo_dir,
-        version = version,
-        type = "source",
-        include.Meta = TRUE,
-        dry.run = TRUE
-    )
-    rdxrefs_file <- file.path(version_repo_dir, "rdxrefs.rds")
-    if (!file.exists(rdxrefs_file))
-        stop(
-            "rdxrefs.rds file not found in ", version_repo_dir
-        )
-    tools:::read_CRAN_object(
-        local_type_area(
+.rds_file_path <- function(rds_file, base_repo_dir, version) {
+    file.path(
+        create_local_type_area(
             base_repo_dir = base_repo_dir,
             version = version,
             type = "source",
-            uri = TRUE
+            include.Meta = TRUE,
+            dry.run = TRUE
         ),
-        "src/contrib/Meta/rdxrefs.rds"
+        rds_file
     )
 }
