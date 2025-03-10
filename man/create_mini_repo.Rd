@@ -8,8 +8,25 @@ create_mini_repo(
   src_pkg_dirs,
   base_repo_dir = minibioc_base_dir(),
   type = getOption("pkgType"),
-  version = BiocManager::version()
+  version = BiocManager::version(),
+  logs_path = getOption("minibioc.logs")
 )
+}
+\arguments{
+\item{src_pkg_dirs}{\code{character()} A vector of package names or their local
+source directories (when buliding tarballs).}
+
+\item{base_repo_dir}{\code{character(1)} The base directory where the CRAN-like
+repository will be created.}
+
+\item{type}{\code{character(1)} The type of repository to create. Either "source"
+or "binary". By default, it the value of \code{getOption("pkgType")}.}
+
+\item{version}{\code{character(1)} The version of the repository to create. By
+default, it is the value of \code{BiocManager::version()}.}
+
+\item{logs_path}{\code{character(1)} The path to the logs directory. By default,
+it is the value of \code{getOption("minibioc.logs")}.}
 }
 \description{
 Create a minibioc local repository
