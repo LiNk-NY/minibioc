@@ -42,6 +42,10 @@ bioc_sub_pkgs <- file.path(
     )
 )
 
+library(ReleaseLaunch)
+## gitcreds::gitcreds_set()
+update_local_repos(repos_dir = source_base_dir, org = "Bioconductor")
+
 ## specify minibioc base repository directory
 repo_dir <- minibioc_base_dir()
 
@@ -74,7 +78,8 @@ bplapply(
     bioc_sub_pkgs,
     create_mini_repo,
     base_repo_dir = repo_dir,
-    type = "source"
+    type = "source",
+    logs_path = "~/data/logs"
 )
 
 }
