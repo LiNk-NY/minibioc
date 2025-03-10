@@ -11,6 +11,9 @@
 #'     )
 #' )
 #'
+#' ## specify minibioc base repository directory
+#' repo_dir <- minibioc_base_dir()
+#'
 #' ## minibioc source
 #' repo_src_path <- create_mini_repo(
 #'     src_pkg_dirs = bioc_sub_pkgs,
@@ -26,6 +29,21 @@
 #'    src_pkg_dirs = bioc_sub_pkgs,
 #'    base_repo_dir = repo_dir,
 #'    type = "binary"
+#' )
+#' ## add repository to repos option
+#' options(repos = c(biocBin = repo_bin_path, getOption("repos")))
+#'
+#' ## run in parallel
+#' library(BiocParallel)
+#'
+#' bpparam <- BiocParallel::MulticoreParam(workers = 12)
+#' BiocParallel::register(bpparam)
+#'
+#' bplapply(
+#'     bioc_sub_pkgs,
+#'     create_mini_repo,
+#'     base_repo_dir = repo_dir,
+#'     type = "source"
 #' )
 #'
 #' @export
