@@ -48,11 +48,17 @@ create_mini_repo <- function(
 
     build_fun <- switch(
         type,
-        source = source_build,
-        binary = binary_build
+        source = minibioc_build_single_package,
+        binary = minibioc_install_single_package
     )
 
-    lapply(src_pkg_dirs, build_fun, dir = contrib_repo)
+    lapply(
+        src_pkg_dirs,
+        build_fun,
+        dest_path = contrib_repo,
+        lib_path = NULL,
+        logs_path = "~/data/logs"
+    )
 
     tools::write_PACKAGES(
         dir = contrib_repo, addFiles = identical(type, "binary")
@@ -64,25 +70,4 @@ create_mini_repo <- function(
         type = type,
         uri = TRUE
     )
-}
-
-binary_build <- function(pkg, dir) {
-    old <- setwd(dir)
-    on.exit(setwd(old))
-    pkg <- source_build(pkg = pkg, dir = dir)
-    install.packages(
-        pkg,
-        repos = NULL,
-        type = "source",
-        INSTALL_opts = "--build",
-        update = FALSE,
-        quiet = TRUE,
-        ## whether to keep the .out files
-        keep_outputs = FALSE,
-        force = TRUE
-    )
-}
-
-source_build <- function(pkg, dir) {
-    devtools::build(pkg, path = dir, vignettes = FALSE)
 }
