@@ -39,7 +39,8 @@
 #' repo_src_path <- create_mini_repo(
 #'     src_pkg_dirs = bioc_sub_pkgs,
 #'     base_repo_dir = repo_dir,
-#'     type = "source"
+#'     type = "source",
+#'     logs_path = "~/data/logs"
 #' )
 #' ## add repository to repos option
 #' options(repos = c(getOption("repos"), biocSrc = repo_src_path))
@@ -47,9 +48,10 @@
 #'
 #' ## minibioc binaries
 #' repo_bin_path <- create_mini_repo(
-#'    src_pkg_dirs = bioc_sub_pkgs,
-#'    base_repo_dir = repo_dir,
-#'    type = "binary"
+#'     src_pkg_dirs = bioc_sub_pkgs,
+#'     base_repo_dir = repo_dir,
+#'     type = "binary",
+#'     logs_path = "~/data/logs"
 #' )
 #' ## add repository to repos option
 #' options(repos = c(biocBin = repo_bin_path, getOption("repos")))
