@@ -20,25 +20,19 @@
 #' @importFrom BiocManager install
 #' @importFrom futile.logger flog.appender flog.info flog.error appender.tee
 #'
-#' @returns `minibioc_install_single_package()` returns invisibly
+#' @returns `install_binary_package()` returns invisibly
 #'
 #' @examples
 #'
-#' repo_bin_path <- local_type_area(
-#'     base_repo_dir = minibioc_base_dir(),
-#'     version = BiocManager::version(),
-#'     type = "binary",
-#'     uri = FALSE
-#' )
-#' minibioc_install_single_package(
-#'     pkg = "Biobase",
+#' install_binary_package(
+#'     pkg = "DelayedArray",
 #'     lib_path = NULL,
 #'     dest_path = utils::contrib.url(repo_bin_path),
 #'     logs_path = "~/data/logs"
 #' )
 #' @export
-minibioc_install_single_package <-
-    function(pkg, lib_path, dest_path, logs_path)
+install_binary_package <-
+    function(pkg, lib_path, dest_path = minibioc_base_dir(), logs_path)
 {
     .libPaths(c(lib_path, .libPaths()))
 
@@ -47,6 +41,11 @@ minibioc_install_single_package <-
     flog.appender(appender.tee(log_file), name = 'minibioc_install')
 
     flog.info("building binary for package: %s", pkg, name = 'minibioc_install')
+
+    if (missing(dest_path))
+        dest_path <- create_local_type_area(
+            base_repo_dir = dest_path, type = "binary", dry.run = FALSE
+        )
     cwd <- setwd(dest_path)
     on.exit(setwd(cwd))
 
@@ -83,7 +82,7 @@ minibioc_install_single_package <-
 #' @rdname minibioc_single_package
 #'
 #' @export
-minibioc_build_single_package <-
+build_source_package <-
     function(pkg, lib_path, dest_path, logs_path)
 {
     .libPaths(c(lib_path, .libPaths()))

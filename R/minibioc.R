@@ -102,8 +102,8 @@ create_mini_repo <- function(
 
     build_fun <- switch(
         type,
-        source = minibioc_build_single_package,
-        binary = minibioc_install_single_package
+        source = build_source_package,
+        binary = install_binary_package
     )
 
     lapply(

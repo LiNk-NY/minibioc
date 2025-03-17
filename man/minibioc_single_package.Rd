@@ -2,13 +2,18 @@
 % Please edit documentation in R/minibioc_install.R
 \name{minibioc_single_package}
 \alias{minibioc_single_package}
-\alias{minibioc_install_single_package}
-\alias{minibioc_build_single_package}
+\alias{install_binary_package}
+\alias{build_source_package}
 \title{Install and create binaries for R packages}
 \usage{
-minibioc_install_single_package(pkg, lib_path, dest_path, logs_path)
+install_binary_package(
+  pkg,
+  lib_path,
+  dest_path = minibioc_base_dir(),
+  logs_path
+)
 
-minibioc_build_single_package(pkg, lib_path, dest_path, logs_path)
+build_source_package(pkg, lib_path, dest_path, logs_path)
 }
 \arguments{
 \item{pkg}{\code{character(1)} name of R or Bioconductor package.}
@@ -21,7 +26,7 @@ minibioc_build_single_package(pkg, lib_path, dest_path, logs_path)
 stored.}
 }
 \value{
-\code{minibioc_install_single_package()} returns invisibly
+\code{install_binary_package()} returns invisibly
 }
 \description{
 Generalized from \code{BiocKubeInstall}. This function installs a
@@ -33,14 +38,8 @@ The package given by \code{pkg} is installed in the given library path
 }
 \examples{
 
-repo_bin_path <- local_type_area(
-    base_repo_dir = minibioc_base_dir(),
-    version = BiocManager::version(),
-    type = "binary",
-    uri = FALSE
-)
-minibioc_install_single_package(
-    pkg = "Biobase",
+install_binary_package(
+    pkg = "DelayedArray",
     lib_path = NULL,
     dest_path = utils::contrib.url(repo_bin_path),
     logs_path = "~/data/logs"
