@@ -101,7 +101,9 @@ build_source_package <-
     log_file <- file.path(logs_path, 'minibioc_build.log')
     flog.appender(appender.tee(log_file), name = 'minibioc_build')
 
-    flog.info("building source package: %s", pkg, name = 'minibioc_build')
+    flog.info(
+        "building source package: %s", basename(pkg), name = 'minibioc_build'
+    )
     cwd <- setwd(dest_path)
     on.exit(setwd(cwd))
 
