@@ -78,9 +78,6 @@ create_mini_repo <- function(
     version = BiocManager::version(),
     logs_path = getOption("minibioc.logs")
 ) {
-    if (!all(dir.exists(src_pkg_dirs)))
-        stop("All source packages must be available locally")
-
     stopifnot(
         isCharacter(src_pkg_dirs),
         isScalarCharacter(base_repo_dir),
