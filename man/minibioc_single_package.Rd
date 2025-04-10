@@ -37,11 +37,21 @@ The package given by \code{pkg} is installed in the given library path
 \code{lib_path}, and the binaries are created in the \code{dest_path}.
 }
 \examples{
-
+repo_bin_path <- paste0(
+    "/home/rstudio/minibioc/packages/3.21/",
+    "container-binaries/bioconductor_docker/"
+)
 install_binary_package(
-    pkg = "DelayedArray",
+    pkg = "BiocParallel",
     lib_path = NULL,
     dest_path = utils::contrib.url(repo_bin_path),
+    logs_path = "~/data/logs"
+)
+repo_src_path <- "/home/rstudio/minibioc/packages/3.21/bioc/"
+build_source_package(
+    pkg = "~/bioc/BiocParallel",
+    lib_path = NULL,
+    dest_path = utils::contrib.url(repo_src_path),
     logs_path = "~/data/logs"
 )
 }

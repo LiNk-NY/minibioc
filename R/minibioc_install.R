@@ -23,9 +23,12 @@
 #' @returns `install_binary_package()` returns invisibly
 #'
 #' @examples
-#'
+#' repo_bin_path <- paste0(
+#'     "/home/rstudio/minibioc/packages/3.21/",
+#'     "container-binaries/bioconductor_docker/"
+#' )
 #' install_binary_package(
-#'     pkg = "DelayedArray",
+#'     pkg = "BiocParallel",
 #'     lib_path = NULL,
 #'     dest_path = utils::contrib.url(repo_bin_path),
 #'     logs_path = "~/data/logs"
@@ -81,6 +84,14 @@ install_binary_package <-
 
 #' @rdname minibioc_single_package
 #'
+#' @examples
+#' repo_src_path <- "/home/rstudio/minibioc/packages/3.21/bioc/"
+#' build_source_package(
+#'     pkg = "~/bioc/BiocParallel",
+#'     lib_path = NULL,
+#'     dest_path = utils::contrib.url(repo_src_path),
+#'     logs_path = "~/data/logs"
+#' )
 #' @export
 build_source_package <-
     function(pkg, lib_path, dest_path, logs_path)
