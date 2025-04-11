@@ -126,3 +126,263 @@ build_source_package <-
     )
     result
 }
+
+#' Install and create binaries for packages parallely
+#'
+#' @description Install packages and create binaries using a BiocParallelParam
+#'   for a specific bioconductor docker image. The minibioc_install function can
+#'   be scaled to a large cluster to reduce times even further (in theory).
+#'   Please note that this command may charge your Google billing account,
+#'   beware of the charges.
+#'
+#' @param lib_path character() path where R package libraries are
+#'     stored.
+#'
+#' @param bin_path character() path where R package binaries are
+#'     stored.
+#'
+#' @param logs_path character() path where R package binary build logs
+#'     are stored.
+#'
+#' @param deps package dependecy graph as computed by
+#'     `.pkg_dependencies()`.
+#'
+#' @param BPPARAM A `BiocParallelParam` object specifying how each
+#'     level of the dependency graph will be parallelized. Use
+#'     `SerialParam()` for debugging
+#'
+#' @importFrom BiocParallel bpiterate bpprogressbar SerialParam
+#'   `bpprogressbar<-` SnowParam
+#'
+#' @importFrom futile.logger flog.error flog.info flog.appender
+#'     appender.file appender.tee
+#'
+#' @examples
+#' library(BiocParallel)
+#' bpparam <- MulticoreParam(
+#'     workers = 22, stop.on.error = FALSE, jobname = "minibioc_binaries"
+#' )
+#' ## First method:
+#' ## Run with a pre-existing bucket with some packages.
+#' ## This will update only the new packages
+#' deps <- pkg_dependencies(binary_repo = local_bin_repo())
+#' minibioc_install(
+#'     lib_path = .libPaths()[1],
+#'     bin_path = local_bin_repo(),
+#'     logs_path = local_bin_log(),
+#'     deps = deps,
+#'     dry.run = FALSE,
+#'     BPPARAM = bpparam
+#' )
+#'
+#' ## Second method:
+#' ## Create a new google CRAN style bucket and populate with binaries.
+#' gcloud_create_cran_bucket("gs://my-new-binary-bucket",
+#'     "1.0", "3.11", secret = "/home/mysecret.json", public = TRUE)
+#'
+#' deps_new <- pkg_dependencies(binary_repo = "my-new-binary-bucket/1.0/3.11")
+#'
+#' minibioc_install(
+#'     lib_path = "/host/library",
+#'     bin_path = local_bin_repo(),
+#'     logs_path = local_bin_log(),
+#'     deps = deps_new
+#' )
+#' @export
+minibioc_install <-
+    function(lib_path, bin_path, logs_path, deps, dry.run, BPPARAM = NULL)
+{
+    stopifnot(
+        isScalarCharacter(lib_path),
+        isScalarCharacter(bin_path),
+        isScalarCharacter(logs_path)
+    )
+
+    ## Only if BPPARAM is null, use SnowParam
+    if (is.null(BPPARAM)) {
+        BPPARAM <- SnowParam()
+    }
+    ## disable the default progressbar
+    progressbar_arg <- bpprogressbar(BPPARAM)
+    bpprogressbar(BPPARAM) <- FALSE
+    on.exit(bpprogressbar(BPPARAM) <- progressbar_arg, add = TRUE)
+
+    ## Logging
+    log_file <- file.path(logs_path, 'minibioc_install.log')
+    flog.appender(appender.tee(log_file), name = 'minibioc_install')
+    flog.info(
+        "%d packages to process ",
+        length(deps),
+        name = "minibioc_install"
+    )
+
+    error_file <- file.path(logs_path, 'minibioc_errors.log')
+    flog.appender(appender.tee(error_file), name = 'minibioc_errors')
+
+    progress_file <- file.path(logs_path, 'minibioc_progress.log')
+    flog.appender(appender.tee(progress_file), name = 'minibioc_progress')
+
+    ## Iterator function
+    iter <- .dependency_graph_iterator_factory(
+        deps,
+        install_binary_package
+    )
+
+    result <- bpiterate(
+        iter$ITER, iter$FUN,
+        dry.run = dry.run,
+        lib_path = lib_path,
+        bin_path = bin_path,
+        logs_path = logs_path,
+        REDUCE = iter$REDUCE,
+        init = c(), ## need to keep this as initial value for reducer
+        BPPARAM = BPPARAM
+    )
+    result <- as.list(result)
+
+    ## Logging to document how many packages failed and installed
+    ## TRUE is success, FALSE is fail
+    ## TODO: try to log excluded packages like canceR, and ChemmineOB
+    flog.info(
+        "%d built, %d succeeded, %d failed",
+        length(deps),
+        length(deps) - length(result),
+        length(result),
+        name = "minibioc_install"
+    )
+
+    if (length(result)) {
+        flog.info(
+            "Failed packages: %s",
+            paste0(names(result), collapse = ", "),
+            name = "minibioc_install"
+        )
+    }
+
+    if (length(iter$this$failed)) {
+        pkgs <- as.list(iter$this$failed)
+        msg <- paste0(names(pkgs),
+                      " failed for the reason: ",
+                      as.character(pkgs))
+        flog.error(msg, name = "minibioc_errors")
+    }
+
+    ## Create PACKAGES, PACKAGES.gz, PACAKGES.rds
+    tools::write_PACKAGES(bin_path, addFiles = TRUE, verbose = TRUE)
+    flog.info("PACKAGES files created", name = "minibioc_install")
+
+    result
+}
+
+.get_artifact_paths <-
+    function(version, volume_mount_path)
+{
+    list(
+        lib_path = .create_artifact_dir(version, volume_mount_path, 'library'),
+        bin_path = .create_artifact_dir(version, volume_mount_path, 'binary'),
+        logs_path = .create_artifact_dir(version, volume_mount_path, 'logs')
+    )
+}
+
+minibioc_run <- function(
+    bioc_version = BiocManager::version(),
+    image_name = "bioconductor_docker",
+    volume_mount_path = minibioc_base_dir(),
+    cloud_id = c("local", "gcp", "azure"),
+    build = c("_software", "_update", "_timings"),
+    depth0 = FALSE,
+    dry.run = TRUE,
+    ultimate_pkg = character(),
+    exclude_pkgs = character()
+) {
+    cloud_id <- match.arg(cloud_id)
+
+    if (!identical(cloud_id, "local"))
+        artifacts <- .get_artifact_paths(bioc_version, volume_mount_path)
+    else
+        artifacts <- list(
+            lib_path = .libPaths()[1L],
+            bin_path = local_bin_repo(
+                base_repo_dir = volume_mount_path,
+                version = bioc_version
+            ),
+            log_path = local_bin_log()
+        )
+
+    repos <- .repos(bioc_version, image_name, cloud_id = cloud_id)
+
+    Sys.setenv(REDIS_HOST = Sys.getenv("REDIS_SERVICE_HOST"))
+    Sys.setenv(REDIS_PORT = Sys.getenv("REDIS_SERVICE_PORT"))
+
+    if (identical(cloud_id, "local")) {
+        local_create_cran_bucket(
+            image_name = image_name,
+            version = bioc_version,
+            bucket = volume_mount_path
+        )
+    } else if (identical(cloud_id, "google")) {
+        ## Secret key to access bucket on google
+        ## PAIN point 1: Also not needed
+        secret <- "/home/key.json"
+
+        ## Step 0: Create a bucket if you need to
+        ## PAIN POINT 2: Creation of new buckets
+        ## Do it via github actions
+        gcloud_create_cran_bucket(
+            folder = image_name,
+            bioc_version = bioc_version,
+            secret = secret, public = TRUE
+        )
+    } else {
+        stop("'azure' cloud_id not implemented yet")
+    }
+
+    ## Step. 2 : Load deps and installed packages
+    ## remove exclude packages
+    deps <- pkg_dependencies(
+        bioc_version, build = build,
+        binary_repo = repos$binary,
+        ultimate_pkg = ultimate_pkg,
+        exclude = exclude_pkgs
+    )
+
+    if (depth0)
+        deps <- deps[lengths(deps) == 0L]
+    ## Step 3: Run minibioc_install so package binaries are built
+    BPPARAM <- RedisParam(
+        jobname = "binarybuild", is.worker = FALSE,
+        progressbar = TRUE, stop.on.error = FALSE
+    )
+
+    res <- minibioc_install(
+        lib_path = artifacts$lib_path,
+        bin_path = artifacts$bin_path,
+        logs_path = artifacts$logs_path,
+        dry.run = dry.run,
+        deps = deps, BPPARAM = BPPARAM
+    )
+
+    ## Stop RedisParam - This should stop all work on workers
+    rpstopall(BPPARAM)
+
+    ##  Step 4: Sync all artifacts produced, binaries, logs
+    if (identical(cloud_id, "local")) {
+        local_sync_artifacts(
+            artifacts = artifacts,
+            repos = repos
+        )
+    } else if (identical(cloud_id, "google")) {
+        ## PAIN POINT 3: Remove from this function
+        ## all sync goes to Github actions
+        cloud_sync_artifacts(
+            secret = secret,
+            artifacts = artifacts,
+            repos = repos
+        )
+    }
+
+    ## ## Step 5: check if all workers were used
+    check <- table(unlist(res))
+
+    check
+}
