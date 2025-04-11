@@ -38,3 +38,32 @@ read_CRAN_rds <- function(
         rds_file
     )
 }
+
+#' @keywords internal
+.repos <-
+    function(version, image_name, cloud_id = c('local', 'gcp', 'azure'))
+{
+    cloud <- match.arg(cloud_id)
+
+    if (identical(cloud, "local")) {
+        bucket <- file.path(minibioc_base_dir(), "packages")
+    }
+
+    if (identical(cloud, "gcp")) {
+        bucket <- paste0("gs://", "bioconductor-packages/")
+    }
+
+    if (identical(cloud, "azure")) {
+        bucket <- "https://bioconductordocker.blob.core.windows.net/"
+    }
+
+    ## 'binary_repo' is where the existing binaries are located.
+    ## 'cran_bucket' is where packages are uploaded on a google bucket
+    binary_repo <- paste0(
+        bucket, version, "/container-binaries/", image_name
+    )
+    cran_repo <- paste0(binary_repo, "/src/contrib/")
+    logs_repo <- paste0(binary_repo, "/src/package_logs/")
+
+    list(cran = cran_repo, binary = binary_repo, logs = logs_repo)
+}
