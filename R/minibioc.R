@@ -40,7 +40,7 @@
 #'     src_pkg_dirs = bioc_sub_pkgs,
 #'     base_repo_dir = repo_dir,
 #'     type = "source",
-#'     logs_path = "~/data/logs"
+#'     logs_path = local_src_log()
 #' )
 #' ## add repository to repos option
 #' options(repos = c(getOption("repos"), biocSrc = repo_src_path))
@@ -51,7 +51,7 @@
 #'     src_pkg_dirs = bioc_sub_pkgs,
 #'     base_repo_dir = repo_dir,
 #'     type = "binary",
-#'     logs_path = "~/data/logs"
+#'     logs_path = local_bin_log()
 #' )
 #' ## add repository to repos option
 #' options(repos = c(biocBin = repo_bin_path, getOption("repos")))
@@ -67,7 +67,7 @@
 #'     create_mini_repo,
 #'     base_repo_dir = repo_dir,
 #'     type = "source",
-#'     logs_path = "~/data/logs"
+#'     logs_path = local_src_log()
 #' )
 #'
 #' @export

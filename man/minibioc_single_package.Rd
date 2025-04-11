@@ -6,12 +6,7 @@
 \alias{build_source_package}
 \title{Install and create binaries for R packages}
 \usage{
-install_binary_package(
-  pkg,
-  lib_path,
-  dest_path = minibioc_base_dir(),
-  logs_path
-)
+install_binary_package(pkg, lib_path, dest_path = local_bin_repo(), logs_path)
 
 build_source_package(pkg, lib_path, dest_path, logs_path)
 }
@@ -37,21 +32,17 @@ The package given by \code{pkg} is installed in the given library path
 \code{lib_path}, and the binaries are created in the \code{dest_path}.
 }
 \examples{
-repo_bin_path <- paste0(
-    "/home/rstudio/minibioc/packages/3.21/",
-    "container-binaries/bioconductor_docker/"
-)
 install_binary_package(
     pkg = "BiocParallel",
     lib_path = NULL,
-    dest_path = utils::contrib.url(repo_bin_path),
-    logs_path = "~/data/logs"
+    dest_path = local_bin_repo(),
+    logs_path = local_bin_log()
 )
 repo_src_path <- "/home/rstudio/minibioc/packages/3.21/bioc/"
 build_source_package(
     pkg = "~/bioc/BiocParallel",
     lib_path = NULL,
     dest_path = utils::contrib.url(repo_src_path),
-    logs_path = "~/data/logs"
+    logs_path = local_src_log()
 )
 }
