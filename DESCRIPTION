@@ -11,7 +11,8 @@ Imports:
     BiocBaseUtils,
     BiocManager,
     futile.logger,
-    pkgbuild
+    pkgbuild,
+    RedisParam
 Suggests:
     ReleaseLaunch
 Remotes:
