@@ -6,13 +6,13 @@
 #'  single R package and creates its binary file for installation.
 #'
 #' @details The package given by `pkg` is installed in the given library path
-#'   `lib_path`, and the binaries are created in the `dest_path`.
+#'   `lib_path`, and the binaries are created in the `bin_path`.
 #'
 #' @param pkg `character(1)` name of R or Bioconductor package.
 #'
 #' @param lib_path `character(1)` path where R package libraries are stored.
 #'
-#' @param dest_path `character(1)` path where R package binaries are stored.
+#' @param bin_path `character(1)` path where R package binaries are stored.
 #'
 #' @param log_path `character(1)` path where R package binary build logs are
 #'   stored.
@@ -41,11 +41,11 @@ install_binary_package <-
 
     flog.info("building binary for package: %s", pkg, name = 'minibioc_install')
 
-    if (missing(dest_path))
-        dest_path <- create_local_type_area(
-            base_repo_dir = dest_path, type = "binary", dry.run = FALSE
+    if (missing(bin_path))
+        bin_path <- create_local_type_area(
+            base_repo_dir = bin_path, type = "binary", dry.run = FALSE
         )
-    cwd <- setwd(dest_path)
+    cwd <- setwd(bin_path)
     on.exit(setwd(cwd))
 
     ## The default return value for a success package building
@@ -100,7 +100,7 @@ build_source_package <-
     flog.info(
         "building source package: %s", basename(pkg), name = 'minibioc_build'
     )
-    cwd <- setwd(dest_path)
+    cwd <- setwd(bin_path)
     on.exit(setwd(cwd))
 
     ## The default return value for a success package building
@@ -110,7 +110,7 @@ build_source_package <-
         suppressMessages(
             pkgbuild::build(
                 path = pkg,
-                dest_path = dest_path
+                dest_path = bin_path
             )
         )
     },
