@@ -14,7 +14,7 @@
 #'
 #' @param dest_path `character(1)` path where R package binaries are stored.
 #'
-#' @param logs_path `character(1)` path where R package binary build logs are
+#' @param log_path `character(1)` path where R package binary build logs are
 #'   stored.
 #'
 #' @importFrom BiocManager install
@@ -26,17 +26,17 @@
 #' install_binary_package(
 #'     pkg = "BiocParallel",
 #'     lib_path = NULL,
-#'     dest_path = local_bin_repo(),
-#'     logs_path = local_bin_log()
+#'     bin_path = local_bin_repo(),
+#'     log_path = local_bin_log()
 #' )
 #' @export
 install_binary_package <-
-    function(pkg, lib_path, dest_path = local_bin_repo(), logs_path)
+    function(pkg, dry.run, lib_path, bin_path = local_bin_repo(), log_path)
 {
     .libPaths(c(lib_path, .libPaths()))
 
     pkg <- basename(pkg)
-    log_file <- file.path(logs_path, 'minibioc_install.log')
+    log_file <- file.path(log_path, 'minibioc_install.log')
     flog.appender(appender.tee(log_file), name = 'minibioc_install')
 
     flog.info("building binary for package: %s", pkg, name = 'minibioc_install')
@@ -85,16 +85,16 @@ install_binary_package <-
 #' build_source_package(
 #'     pkg = "~/bioc/BiocParallel",
 #'     lib_path = NULL,
-#'     dest_path = utils::contrib.url(repo_src_path),
-#'     logs_path = local_src_log()
+#'     bin_path = utils::contrib.url(repo_src_path),
+#'     log_path = local_src_log()
 #' )
 #' @export
 build_source_package <-
-    function(pkg, lib_path, dest_path, logs_path)
+    function(pkg, lib_path, bin_path, log_path)
 {
     .libPaths(c(lib_path, .libPaths()))
 
-    log_file <- file.path(logs_path, 'minibioc_build.log')
+    log_file <- file.path(log_path, 'minibioc_build.log')
     flog.appender(appender.tee(log_file), name = 'minibioc_build')
 
     flog.info(
@@ -141,7 +141,7 @@ build_source_package <-
 #' @param bin_path character() path where R package binaries are
 #'     stored.
 #'
-#' @param logs_path character() path where R package binary build logs
+#' @param log_path character() path where R package binary build logs
 #'     are stored.
 #'
 #' @param deps package dependecy graph as computed by
@@ -169,7 +169,7 @@ build_source_package <-
 #' minibioc_install(
 #'     lib_path = .libPaths()[1],
 #'     bin_path = local_bin_repo(),
-#'     logs_path = local_bin_log(),
+#'     log_path = local_bin_log(),
 #'     deps = deps,
 #'     dry.run = FALSE,
 #'     BPPARAM = bpparam
@@ -185,17 +185,17 @@ build_source_package <-
 #' minibioc_install(
 #'     lib_path = "/host/library",
 #'     bin_path = local_bin_repo(),
-#'     logs_path = local_bin_log(),
+#'     log_path = local_bin_log(),
 #'     deps = deps_new
 #' )
 #' @export
 minibioc_install <-
-    function(lib_path, bin_path, logs_path, deps, dry.run, BPPARAM = NULL)
+    function(lib_path, bin_path, log_path, deps, dry.run, BPPARAM = NULL)
 {
     stopifnot(
-        isScalarCharacter(lib_path),
+        isScalarCharacter(lib_path) || is.null(lib_path),
         isScalarCharacter(bin_path),
-        isScalarCharacter(logs_path)
+        isScalarCharacter(log_path)
     )
 
     ## Only if BPPARAM is null, use SnowParam
@@ -208,7 +208,7 @@ minibioc_install <-
     on.exit(bpprogressbar(BPPARAM) <- progressbar_arg, add = TRUE)
 
     ## Logging
-    log_file <- file.path(logs_path, 'minibioc_install.log')
+    log_file <- file.path(log_path, 'minibioc_install.log')
     flog.appender(appender.tee(log_file), name = 'minibioc_install')
     flog.info(
         "%d packages to process ",
@@ -216,10 +216,10 @@ minibioc_install <-
         name = "minibioc_install"
     )
 
-    error_file <- file.path(logs_path, 'minibioc_errors.log')
+    error_file <- file.path(log_path, 'minibioc_errors.log')
     flog.appender(appender.tee(error_file), name = 'minibioc_errors')
 
-    progress_file <- file.path(logs_path, 'minibioc_progress.log')
+    progress_file <- file.path(log_path, 'minibioc_progress.log')
     flog.appender(appender.tee(progress_file), name = 'minibioc_progress')
 
     ## Iterator function
@@ -280,7 +280,7 @@ minibioc_install <-
     list(
         lib_path = .create_artifact_dir(version, volume_mount_path, 'library'),
         bin_path = .create_artifact_dir(version, volume_mount_path, 'binary'),
-        logs_path = .create_artifact_dir(version, volume_mount_path, 'logs')
+        log_path = .create_artifact_dir(version, volume_mount_path, 'logs')
     )
 }
 
@@ -357,7 +357,7 @@ minibioc_run <- function(
     res <- minibioc_install(
         lib_path = artifacts$lib_path,
         bin_path = artifacts$bin_path,
-        logs_path = artifacts$logs_path,
+        log_path = artifacts$log_path,
         dry.run = dry.run,
         deps = deps, BPPARAM = BPPARAM
     )

@@ -6,18 +6,24 @@
 \alias{build_source_package}
 \title{Install and create binaries for R packages}
 \usage{
-install_binary_package(pkg, lib_path, dest_path = local_bin_repo(), logs_path)
+install_binary_package(
+  pkg,
+  dry.run,
+  lib_path,
+  bin_path = local_bin_repo(),
+  log_path
+)
 
-build_source_package(pkg, lib_path, dest_path, logs_path)
+build_source_package(pkg, lib_path, bin_path, log_path)
 }
 \arguments{
 \item{pkg}{\code{character(1)} name of R or Bioconductor package.}
 
 \item{lib_path}{\code{character(1)} path where R package libraries are stored.}
 
-\item{dest_path}{\code{character(1)} path where R package binaries are stored.}
+\item{bin_path}{\code{character(1)} path where R package binaries are stored.}
 
-\item{logs_path}{\code{character(1)} path where R package binary build logs are
+\item{log_path}{\code{character(1)} path where R package binary build logs are
 stored.}
 }
 \value{
@@ -29,20 +35,20 @@ single R package and creates its binary file for installation.
 }
 \details{
 The package given by \code{pkg} is installed in the given library path
-\code{lib_path}, and the binaries are created in the \code{dest_path}.
+\code{lib_path}, and the binaries are created in the \code{bin_path}.
 }
 \examples{
 install_binary_package(
     pkg = "BiocParallel",
     lib_path = NULL,
-    dest_path = local_bin_repo(),
-    logs_path = local_bin_log()
+    bin_path = local_bin_repo(),
+    log_path = local_bin_log()
 )
 repo_src_path <- "/home/rstudio/minibioc/packages/3.21/bioc/"
 build_source_package(
     pkg = "~/bioc/BiocParallel",
     lib_path = NULL,
-    dest_path = utils::contrib.url(repo_src_path),
-    logs_path = local_src_log()
+    bin_path = utils::contrib.url(repo_src_path),
+    log_path = local_src_log()
 )
 }

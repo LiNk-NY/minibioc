@@ -13,7 +13,7 @@
 #'   default, it is the value of `BiocManager::version()`.
 #'
 #' @param logs_path `character(1)` The path to the logs directory. By default,
-#'   it is the value of `getOption("minibioc.logs")`.
+#'   it is the value of `local_bin_log()`.
 #'
 #' @importFrom BiocBaseUtils isCharacter
 #'

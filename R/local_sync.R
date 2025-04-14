@@ -57,7 +57,7 @@ local_create_cran_bucket <- function(
 
 #' @export
 local_sync_artifacts <-  function(artifacts, repos) {
-    log_file <- file.path(artifacts$logs_path, 'minibioc_install.log')
+    log_file <- file.path(artifacts$log_path, 'minibioc_install.log')
     flog.appender(appender.tee(log_file), name = 'minibioc_install')
 
     ## Move .out files from bin_path to logs_path
@@ -78,10 +78,10 @@ local_sync_artifacts <-  function(artifacts, repos) {
     )
 
     ## Sync logs from /host/logs_3_13 to /src/package_logs
-    .file_move(artifacts$logs_path, repos$logs, "\\.log$")
+    .file_move(artifacts$log_path, repos$logs, "\\.log$")
     flog.info(
         'Finished moving logs to local storage: %s',
-        artifacts$logs_path,
+        artifacts$log_path,
         name = 'minibioc_install'
     )
 }

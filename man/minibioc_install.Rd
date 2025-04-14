@@ -4,7 +4,7 @@
 \alias{minibioc_install}
 \title{Install and create binaries for packages parallely}
 \usage{
-minibioc_install(lib_path, bin_path, logs_path, deps, dry.run, BPPARAM = NULL)
+minibioc_install(lib_path, bin_path, log_path, deps, dry.run, BPPARAM = NULL)
 }
 \arguments{
 \item{lib_path}{character() path where R package libraries are
@@ -13,7 +13,7 @@ stored.}
 \item{bin_path}{character() path where R package binaries are
 stored.}
 
-\item{logs_path}{character() path where R package binary build logs
+\item{log_path}{character() path where R package binary build logs
 are stored.}
 
 \item{deps}{package dependecy graph as computed by
@@ -42,7 +42,7 @@ deps <- pkg_dependencies(binary_repo = local_bin_repo())
 minibioc_install(
     lib_path = .libPaths()[1],
     bin_path = local_bin_repo(),
-    logs_path = local_bin_log(),
+    log_path = local_bin_log(),
     deps = deps,
     dry.run = FALSE,
     BPPARAM = bpparam
@@ -58,7 +58,7 @@ deps_new <- pkg_dependencies(binary_repo = "my-new-binary-bucket/1.0/3.11")
 minibioc_install(
     lib_path = "/host/library",
     bin_path = local_bin_repo(),
-    logs_path = local_bin_log(),
+    log_path = local_bin_log(),
     deps = deps_new
 )
 }

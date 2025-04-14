@@ -291,6 +291,9 @@ pkg_dependencies <- function(
     repos <- .worker_repositories(version)
     db <- available.packages(repos = repos)
 
+    log_path <- local_bin_log()
+    log_file <- file.path(log_path, 'minibioc_install.log')
+    flog.appender(appender.tee(log_file), name = 'minibioc_install')
     flog.info(
         "%d packages, %d repositories [pkg_dependencies()]",
         nrow(db), length(repos),
