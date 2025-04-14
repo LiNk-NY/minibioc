@@ -9,9 +9,9 @@ minibioc_base_dir <- function(..., ask = interactive()) {
 #' @importFrom BiocBaseUtils isScalarCharacter askUserYesNo
 #' @export
 setCache <- function(
-        directory = normalizePath("~/minibioc"),
-        verbose = TRUE,
-        ask = interactive()
+    directory = file.path(Sys.getenv("HOME"), "minibioc"),
+    verbose = TRUE,
+    ask = interactive()
 ) {
     stopifnot(
         isScalarCharacter(directory)
