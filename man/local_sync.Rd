@@ -26,6 +26,13 @@ the binary repository.
 Create a CRAN style local repository
 }
 \examples{
+## with minibioc_base_dir()
+local_create_cran_bucket(
+    image_name = "bioconductor_docker",
+    version = "3.21",
+    bucket = minibioc_base_dir()
+)
+## on k8s
 local_create_cran_bucket(
     image_name = "bioconductor_docker",
     version = "3.21",
