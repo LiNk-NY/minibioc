@@ -105,3 +105,4 @@ local_bin_log <- function(
 
     artifact_path
 }
+
