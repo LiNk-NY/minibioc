@@ -39,7 +39,11 @@ install_binary_package <-
     log_file <- file.path(log_path, 'minibioc_install.log')
     flog.appender(appender.tee(log_file), name = 'minibioc_install')
 
-    flog.info("building binary for package: %s", pkg, name = 'minibioc_install')
+    flog.info(
+        "building binaries for %d packages",
+        length(pkg),
+        name = 'minibioc_install'
+    )
 
     if (missing(bin_path))
         bin_path <- create_local_type_area(
@@ -51,30 +55,39 @@ install_binary_package <-
     ## The default return value for a success package building
     result <- pkg
 
-    withCallingHandlers({
-        suppressMessages(
-            BiocManager::install(
-                pkg,
-                type = "source",
-                INSTALL_opts = "--build",
-                update = FALSE,
-                quiet = TRUE,
-                force = TRUE,
-                ## TODO: a successful install output isn't useful
-                keep_outputs = TRUE
+    if (dry.run) {
+        filename <- paste0(pkg, "_timing.txt")
+        file.create(filename)
+    } else {
+        withCallingHandlers({
+            suppressMessages(
+                BiocManager::install(
+                    pkg,
+                    type = "source",
+                    INSTALL_opts = "--build",
+                    update = FALSE,
+                    quiet = FALSE,
+                    force = TRUE,
+                    ## TODO: a successful install output isn't useful
+                    keep_outputs = TRUE
+                )
             )
+        },
+        error = function(e) {
+            flog.error(
+                "Error: package %s failed", pkg, name = "minibioc_install"
+            )
+            result <<- e
+        },
+        warning = function(e) {
+            flog.error(
+                "Error: package %s failed", pkg, name = "minibioc_install"
+            )
+            result <<- e
+            tryInvokeRestart("muffleWarning")
+        }
         )
-    },
-    error = function(e) {
-        flog.error("Error: package %s failed", pkg, name = "minibioc_install")
-        result <<- e
-    },
-    warning = function(e) {
-        flog.error("Error: package %s failed", pkg, name = "minibioc_install")
-        result <<- e
-        tryInvokeRestart("muffleWarning")
     }
-    )
     result
 }
 
@@ -222,21 +235,12 @@ minibioc_install <-
     progress_file <- file.path(log_path, 'minibioc_progress.log')
     flog.appender(appender.tee(progress_file), name = 'minibioc_progress')
 
-    ## Iterator function
-    iter <- .dependency_graph_iterator_factory(
-        deps,
-        install_binary_package
-    )
-
-    result <- bpiterate(
-        iter$ITER, iter$FUN,
+    result <- install_binary_package(
+        names(deps),
         dry.run = dry.run,
         lib_path = lib_path,
         bin_path = bin_path,
-        logs_path = logs_path,
-        REDUCE = iter$REDUCE,
-        init = c(), ## need to keep this as initial value for reducer
-        BPPARAM = BPPARAM
+        log_path = log_path
     )
     result <- as.list(result)
 
@@ -284,6 +288,14 @@ minibioc_install <-
     )
 }
 
+#' @examples
+#' minibioc_run(
+#'     build = "_software",
+#'     ultimate_pkg = "IRanges",
+#'     exclude_pkgs = c("canceR", "ChemmineOB", "flowCore")
+#' )
+#'
+#' @export
 minibioc_run <- function(
     bioc_version = BiocManager::version(),
     image_name = "bioconductor_docker",
