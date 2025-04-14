@@ -17,9 +17,6 @@ minibioc_clean <- function(
     tars <- list.files(bin_path, pattern = "\\.tar\\.gz$")
     pkgs <- vapply(strsplit(tars, "_", fixed = TRUE), `[[`, character(1L), 1L)
     ext.pkgs <- tars[!pkgs %in% software_pkgs]
-    ext.outs <- paste0(pkgs, ".out")
-    if (dry.run)
-        sort(c(ext.pkgs, ext.outs))
-    else
-        file.remove(ext.pkgs, ext.outs)
+
+    if (dry.run) sort(ext.pkgs) else file.remove(ext.pkgs)
 }

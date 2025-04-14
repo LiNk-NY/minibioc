@@ -14,6 +14,13 @@
 #'     the binary repository.
 #'
 #' @examples
+#' ## with minibioc_base_dir()
+#' local_create_cran_bucket(
+#'     image_name = "bioconductor_docker",
+#'     version = "3.21",
+#'     bucket = minibioc_base_dir()
+#' )
+#' ## on k8s
 #' local_create_cran_bucket(
 #'     image_name = "bioconductor_docker",
 #'     version = "3.21",
@@ -51,8 +58,19 @@ local_create_cran_bucket <- function(
 .file_move <- function(source, dest, pattern) {
     files <- list.files(source, pattern = pattern, full.names = TRUE)
     destfiles <- file.path(dest, basename(files))
+    if (!dir.exists(dest))
+        dir.create(dest)
     if (length(files))
         file.rename(files, destfiles)
+}
+
+.output_file_move <-
+    function(artifacts)
+{
+    src <- list.files(artifacts$bin_path, full.names = TRUE, pattern = ".out$")
+    dest <- paste0(artifacts$log_path, "/", basename(src))
+
+    file.rename(src, dest)
 }
 
 #' @export
@@ -65,15 +83,7 @@ local_sync_artifacts <-  function(artifacts, repos) {
     ## and to package_logs
     .output_file_move(artifacts)
     flog.info(
-        'Moved .out files to %s: ', artifacts$logs_path,
-        name = 'minibioc_install'
-    )
-
-    ## Sync binaries from /host/binary_3_13 to /src/contrib/
-    .file_move(artifacts$bin_path, repos$binary, "\\.tar\\.gz$")
-    flog.info(
-        'Finished moving binaries to local storage: %s',
-        artifacts$bin_path,
+        'Moved .out files to %s: ', artifacts$log_path,
         name = 'minibioc_install'
     )
 
