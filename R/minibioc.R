@@ -70,55 +70,70 @@
 #'     logs_path = local_src_log()
 #' )
 #'
+#' minibioc_local_run(
+#'     build = "_software",
+#'     dry.run = FALSE,
+#'     ultimate_pkg = "IRanges",
+#'     exclude_pkgs = c("canceR", "ChemmineOB", "flowCore")
+#' )
+#'
 #' @export
-create_mini_repo <- function(
-    src_pkg_dirs,
+minibioc_local_run <- function(
+    bioc_version = BiocManager::version(),
     base_repo_dir = minibioc_base_dir(),
-    type = getOption("pkgType"),
-    version = BiocManager::version(),
-    logs_path = getOption("minibioc.logs")
+    build = c("_software", "_update", "_timings"),
+    depth0 = FALSE,
+    dry.run = TRUE,
+    ultimate_pkg = character(),
+    exclude_pkgs = character()
 ) {
+    build <- match.arg(build)
     stopifnot(
-        isCharacter(src_pkg_dirs),
         isScalarCharacter(base_repo_dir),
-        isScalarCharacter(type),
-        is.package_version(version) || isScalarCharacter(version),
-        isScalarCharacter(logs_path) && dir.exists(logs_path)
+        is.package_version(bioc_version) || isScalarCharacter(bioc_version)
     )
-
-    if (!dir.exists(logs_path))
-        dir.create(logs_path, recursive = TRUE)
-
-    contrib_repo <- create_local_type_area(
+    local_bin_loc <- local_bin_repo(
         base_repo_dir = base_repo_dir,
-        version = version,
-        type = type,
-        include.Meta = FALSE,
-        dry.run = FALSE
+        version = bioc_version
     )
-
-    build_fun <- switch(
-        type,
-        source = build_source_package,
-        binary = install_binary_package
-    )
-
-    lapply(
-        src_pkg_dirs,
-        build_fun,
-        dest_path = contrib_repo,
+    artifacts <- list(
         lib_path = NULL,
-        logs_path = logs_path
+        bin_path = local_bin_loc,
+        log_path = local_bin_log()
     )
 
-    tools::write_PACKAGES(
-        dir = contrib_repo, addFiles = identical(type, "binary")
+    image_name <- "bioconductor_docker"
+    repos <- .repos(bioc_version, image_name, "local")
+
+    local_create_cran_bucket(
+        image_name = image_name,
+        version = bioc_version,
+        bucket = base_repo_dir
     )
 
-    local_type_area(
-        base_repo_dir = base_repo_dir,
-        version = version,
-        type = type,
-        uri = TRUE
+    deps <- pkg_dependencies(
+        version = bioc_version,
+        build = build,
+        binary_repo = repos$binary,
+        ultimate_pkg = ultimate_pkg,
+        exclude = exclude_pkgs
     )
+
+    if (depth0)
+        deps <- deps[lengths(deps) == 0L]
+
+    minibioc_install(
+        lib_path = artifacts$lib_path,
+        bin_path = artifacts$bin_path,
+        log_path = artifacts$log_path,
+        deps = deps,
+        dry.run = dry.run,
+        BPPARAM = NULL
+    )
+
+    local_sync_artifacts(
+        artifacts = artifacts, repos = repos
+    )
+
+    local_bin_loc
 }
