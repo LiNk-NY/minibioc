@@ -46,7 +46,7 @@ read_CRAN_rds <- function(
     cloud <- match.arg(cloud_id)
 
     if (identical(cloud, "local")) {
-        bucket <- file.path(minibioc_base_dir(), "packages")
+        bucket <- file.path(minibioc_base_dir(), "packages/")
     }
 
     if (identical(cloud, "gcp")) {
