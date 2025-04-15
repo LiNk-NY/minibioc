@@ -232,7 +232,7 @@ minibioc_install <-
     ## Iterator function
     iter <- .dependency_graph_iterator_factory(
         deps,
-        install_binary_package,
+        install_binary_package
     )
 
     result <- bpiterate(
