@@ -66,8 +66,8 @@ local_src_repo <- function(
 
 #' @export
 local_src_log <- function(
-    version = BiocManager::version(),
-    base_dir = minibioc_base_dir()
+    base_dir = minibioc_base_dir(),
+    version = BiocManager::version()
 ) {
     ver <- gsub(".", "_", version, fixed = TRUE)
 
@@ -87,8 +87,8 @@ local_src_log <- function(
 
 #' @export
 local_bin_log <- function(
-    version = BiocManager::version(),
-    base_dir = minibioc_base_dir()
+    base_dir = minibioc_base_dir(),
+    version = BiocManager::version()
 ) {
     ver <- gsub(".", "_", version, fixed = TRUE)
 
