@@ -70,7 +70,8 @@ local_create_cran_bucket <- function(
     src <- list.files(artifacts$bin_path, full.names = TRUE, pattern = ".out$")
     dest <- paste0(artifacts$log_path, "/", basename(src))
 
-    file.rename(src, dest)
+    if (length(src))
+        file.rename(src, dest)
 }
 
 #' @export
