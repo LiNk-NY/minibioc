@@ -72,6 +72,7 @@
 #'
 #' minibioc_local(
 #'     build = "_software",
+#'     depth0 = TRUE,
 #'     dry.run = FALSE,
 #'     ultimate_pkg = "IRanges",
 #'     exclude_pkgs = c("canceR", "ChemmineOB", "flowCore")
