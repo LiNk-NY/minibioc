@@ -72,20 +72,6 @@ repo_bin_path <- create_mini_repo(
 ## add repository to repos option
 options(repos = c(biocBin = repo_bin_path, getOption("repos")))
 
-## run in parallel
-library(BiocParallel)
-
-bpparam <- MulticoreParam(workers = 12)
-register(bpparam)
-
-bplapply(
-    bioc_sub_pkgs,
-    create_mini_repo,
-    base_repo_dir = repo_dir,
-    type = "source",
-    logs_path = local_src_log()
-)
-
 minibioc_local(
     build = "_software",
     depth0 = TRUE,
