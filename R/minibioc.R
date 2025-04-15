@@ -110,7 +110,8 @@ minibioc_local_run <- function(
         build = build,
         binary_repo = repos$binary,
         ultimate_pkg = ultimate_pkg,
-        exclude = exclude_pkgs
+        exclude = exclude_pkgs,
+        cloud_id = "local"
     )
 
     if (depth0)
