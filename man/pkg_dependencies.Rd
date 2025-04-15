@@ -7,8 +7,8 @@
 pkg_dependencies(
   version = BiocManager::version(),
   build = c("_software", "_update", "_timings"),
-  ultimate_pkg = character(),
   binary_repo = local_bin_repo(),
+  ultimate_pkg = character(),
   exclude = character(),
   cloud_id = c("local", "gcp", "azure")
 )
