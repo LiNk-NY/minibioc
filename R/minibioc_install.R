@@ -393,12 +393,12 @@ minibioc_redis <- function(
     rpstopall(BPPARAM)
 
     ##  Step 4: Sync all artifacts produced, binaries, logs
-    if (identical(cloud_id, "local")) {
+    if (identical(cloud_id, "local"))
         local_sync_artifacts(
             artifacts = artifacts,
             repos = repos
         )
-    } else if (identical(cloud_id, "google")) {
+    else if (identical(cloud_id, "google"))
         ## PAIN POINT 3: Remove from this function
         ## all sync goes to Github actions
         cloud_sync_artifacts(
@@ -406,7 +406,6 @@ minibioc_redis <- function(
             artifacts = artifacts,
             repos = repos
         )
-    }
 
     ## ## Step 5: check if all workers were used
     check <- table(unlist(res))
