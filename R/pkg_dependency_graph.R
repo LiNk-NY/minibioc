@@ -65,7 +65,8 @@ NULL
             which = "all",
             recursive = TRUE
         )
-        software_pkgs <- unique(unname(unlist(software_pkgs)))
+        software_pkgs <-
+            c(ultimate_pkg, unique(unname(unlist(software_pkgs))))
     }
     ## all software packages
     deps0 <- package_dependencies(software_pkgs, db, recursive = TRUE)

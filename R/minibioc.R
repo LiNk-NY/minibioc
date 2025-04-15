@@ -100,9 +100,10 @@ minibioc_local <- function(
         exclude = exclude_pkgs,
         cloud_id = "local"
     )
-
+    keep_ultimate <-
+        if (length(ultimate_pkg)) names(deps) == ultimate_pkg else TRUE
     if (depth0)
-        deps <- deps[lengths(deps) == 0L]
+        deps <- deps[lengths(deps) == 0L | keep_ultimate]
 
     minibioc_install(
         lib_path = artifacts$lib_path,
