@@ -106,3 +106,22 @@ local_bin_log <- function(
     artifact_path
 }
 
+#' @export
+local_library <- function(
+        base_repo_dir = minibioc_base_dir(),
+        version = BiocManager::version()
+) {
+    ver <- gsub(".", "_", version, fixed = TRUE)
+    artifact_path <-
+        file.path(base_repo_dir, "lib", "R", paste("bioc", ver, sep = "_"))
+
+    if (!dir.exists(artifact_path)) {
+        dir.create(artifact_path, recursive = TRUE)
+        flog.info(
+            "created path: %s", artifact_path,
+            name = "minibioc_install"
+        )
+    }
+
+    artifact_path
+}

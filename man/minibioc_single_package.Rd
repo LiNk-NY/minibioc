@@ -40,15 +40,15 @@ The package given by \code{pkg} is installed in the given library path
 \examples{
 install_binary_package(
     pkg = "BiocParallel",
-    lib_path = NULL,
+    lib_path = local_library(),
     bin_path = local_bin_repo(),
     log_path = local_bin_log()
 )
 repo_src_path <- "/home/rstudio/minibioc/packages/3.21/bioc/"
 build_source_package(
     pkg = "~/bioc/BiocParallel",
-    lib_path = NULL,
     bin_path = utils::contrib.url(repo_src_path),
+    lib_path = local_library(),
     log_path = local_src_log()
 )
 }

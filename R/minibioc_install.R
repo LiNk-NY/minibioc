@@ -25,7 +25,7 @@
 #' @examples
 #' install_binary_package(
 #'     pkg = "BiocParallel",
-#'     lib_path = NULL,
+#'     lib_path = local_library(),
 #'     bin_path = local_bin_repo(),
 #'     log_path = local_bin_log()
 #' )
@@ -91,8 +91,8 @@ install_binary_package <-
 #' repo_src_path <- "/home/rstudio/minibioc/packages/3.21/bioc/"
 #' build_source_package(
 #'     pkg = "~/bioc/BiocParallel",
-#'     lib_path = NULL,
 #'     bin_path = utils::contrib.url(repo_src_path),
+#'     lib_path = local_library(),
 #'     log_path = local_src_log()
 #' )
 #' @export
@@ -296,7 +296,10 @@ minibioc_install <-
     function(base_repo_dir = minibioc_base_dir(), version)
 {
     list(
-        lib_path = NULL,
+        lib_path = local_library(
+            base_repo_dir = base_repo_dir,
+            version = version
+        ),
         bin_path = local_bin_repo(
             base_repo_dir = base_repo_dir,
             version = version
