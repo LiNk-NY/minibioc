@@ -298,7 +298,7 @@ minibioc_install <-
     list(
         lib_path = NULL,
         bin_path = local_bin_repo(
-            base_dir = base_repo_dir,
+            base_repo_dir = base_repo_dir,
             version = version
         ),
         log_path = local_bin_log(
