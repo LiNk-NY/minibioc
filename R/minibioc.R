@@ -92,14 +92,8 @@ minibioc_local_run <- function(
         isScalarCharacter(base_repo_dir),
         is.package_version(bioc_version) || isScalarCharacter(bioc_version)
     )
-    local_bin_loc <- local_bin_repo(
-        base_repo_dir = base_repo_dir,
-        version = bioc_version
-    )
-    artifacts <- list(
-        lib_path = NULL,
-        bin_path = local_bin_loc,
-        log_path = local_bin_log()
+    artifacts <- .bin_artifact_paths(
+        base_repo_dir = base_repo_dir, version = bioc_version
     )
 
     image_name <- "bioconductor_docker"
@@ -135,5 +129,5 @@ minibioc_local_run <- function(
         artifacts = artifacts, repos = repos
     )
 
-    local_bin_loc
+    artifacts$bin_path
 }

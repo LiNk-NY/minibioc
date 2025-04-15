@@ -288,6 +288,20 @@ minibioc_install <-
     )
 }
 
+.bin_artifact_paths <-
+    function(base_repo_dir = minibioc_base_dir(), version)
+{
+    list(
+        lib_path = NULL,
+        bin_path = local_bin_repo(
+            base_repo_dir = base_repo_dir, version = version
+        ),
+        log_path = local_bin_log(
+            base_repo_dir = base_repo_dir, version = version
+        )
+    )
+}
+
 #' @examples
 #' minibioc_run(
 #'     build = "_software",
