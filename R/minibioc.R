@@ -70,7 +70,7 @@
 #'     logs_path = local_src_log()
 #' )
 #'
-#' minibioc_local_run(
+#' minibioc_local(
 #'     build = "_software",
 #'     dry.run = FALSE,
 #'     ultimate_pkg = "IRanges",
@@ -78,7 +78,7 @@
 #' )
 #'
 #' @export
-minibioc_local_run <- function(
+minibioc_local <- function(
     bioc_version = BiocManager::version(),
     base_repo_dir = minibioc_base_dir(),
     build = c("_software", "_update", "_timings"),
