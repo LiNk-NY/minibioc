@@ -261,7 +261,7 @@ NULL
 #'      public = TRUE
 #' )
 #' deps_new <- pkg_dependencies(
-#'     "_software",
+#'     build = "_software",
 #'     binary_repo = "my-new-binary-bucket/1.0/3.11"
 #' )
 #' }
