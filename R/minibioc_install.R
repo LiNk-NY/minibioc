@@ -332,13 +332,8 @@ minibioc_redis <- function(
     if (!identical(cloud_id, "local"))
         artifacts <- .get_artifact_paths(bioc_version, volume_mount_path)
     else
-        artifacts <- list(
-            lib_path = .libPaths()[1L],
-            bin_path = local_bin_repo(
-                base_repo_dir = volume_mount_path,
-                version = bioc_version
-            ),
-            log_path = local_bin_log()
+        artifacts <- .bin_artifact_paths(
+            base_repo_dir = volume_mount_path, version = bioc_version
         )
 
     repos <- .repos(bioc_version, image_name, cloud_id = cloud_id)
