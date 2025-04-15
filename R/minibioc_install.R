@@ -159,7 +159,7 @@ build_source_package <-
 #'     `SerialParam()` for debugging
 #'
 #' @importFrom BiocParallel bpiterate bpprogressbar SerialParam
-#'   `bpprogressbar<-` SnowParam
+#'   bpprogressbar<- SnowParam
 #'
 #' @importFrom futile.logger flog.error flog.info flog.appender
 #'     appender.file appender.tee
