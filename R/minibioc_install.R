@@ -235,12 +235,22 @@ minibioc_install <-
     progress_file <- file.path(log_path, 'minibioc_progress.log')
     flog.appender(appender.tee(progress_file), name = 'minibioc_progress')
 
-    result <- install_binary_package(
-        names(deps),
+    ## Iterator function
+    iter <- .dependency_graph_iterator_factory(
+        deps,
+        install_binary_package,
+    )
+
+    result <- bpiterate(
+        iter$ITER,
+        iter$FUN,
         dry.run = dry.run,
         lib_path = lib_path,
         bin_path = bin_path,
-        log_path = log_path
+        log_path = log_path,
+        REDUCE = iter$REDUCE,
+        init = c(), ## need to keep this as initial value for reducer
+        BPPARAM = BPPARAM
     )
     result <- as.list(result)
 
