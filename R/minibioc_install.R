@@ -207,7 +207,7 @@ minibioc_install <-
 
     ## Only if BPPARAM is null, use SnowParam
     if (is.null(BPPARAM)) {
-        BPPARAM <- SnowParam(stop.on.error = FALSE)
+        BPPARAM <- BiocParallel::SnowParam(stop.on.error = FALSE)
     }
     ## disable the default progressbar
     progressbar_arg <- bpprogressbar(BPPARAM)
