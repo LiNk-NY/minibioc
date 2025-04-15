@@ -43,10 +43,6 @@ install_binary_package <-
         "building binary for package: %s", pkg, name = 'minibioc_install'
     )
 
-    if (missing(bin_path))
-        bin_path <- create_local_type_area(
-            base_repo_dir = bin_path, type = "binary", dry.run = FALSE
-        )
     cwd <- setwd(bin_path)
     on.exit(setwd(cwd))
 
