@@ -68,10 +68,7 @@ NULL
         software_pkgs <- unique(unname(unlist(software_pkgs)))
     }
     ## all software packages
-    ## deps0 <- package_dependencies(software_pkgs, db, recursive = TRUE)
-    deps0 <- BiocPkgTools::pkgBiocDeps(
-        software_pkgs, recursive = TRUE, which = "strong"
-    )
+    deps0 <- package_dependencies(software_pkgs, db, recursive = TRUE)
 
     ## FULL dependency graph of non-software dependencies
     other <- setdiff(unlist(deps0, use.names = FALSE), names(deps0))
