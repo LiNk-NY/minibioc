@@ -309,14 +309,14 @@ minibioc_install <-
 }
 
 #' @examples
-#' minibioc_run(
+#' minibioc_redis(
 #'     build = "_software",
 #'     ultimate_pkg = "IRanges",
 #'     exclude_pkgs = c("canceR", "ChemmineOB", "flowCore")
 #' )
 #'
 #' @export
-minibioc_run <- function(
+minibioc_redis <- function(
     bioc_version = BiocManager::version(),
     image_name = "bioconductor_docker",
     volume_mount_path = minibioc_base_dir(),
