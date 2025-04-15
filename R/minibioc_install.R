@@ -40,9 +40,7 @@ install_binary_package <-
     flog.appender(appender.tee(log_file), name = 'minibioc_install')
 
     flog.info(
-        "building binaries for %d packages",
-        length(pkg),
-        name = 'minibioc_install'
+        "building binary for package: %s", pkg, name = 'minibioc_install'
     )
 
     if (missing(bin_path))
