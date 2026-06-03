@@ -23,6 +23,15 @@
 #' - local_bin_log:     Constructs path to the local binary build logs.
 #' - local_library:     Constructs path to the local library directory.
 #' }
+#'
+#' @examplesIf interactive()
+#'
+#' local_src_repo() |>
+#'     dir.create(recursive = TRUE)
+#'
+#' local_bin_repo() |>
+#'     dir.create(recursive = TRUE)
+#'
 #' @export
 local_type_area <- function(
     base_repo_dir = minibioc_base_dir(),

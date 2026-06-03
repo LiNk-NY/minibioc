@@ -85,3 +85,13 @@ ensuring that they exist before returning the path.
 - local_library:     Constructs path to the local library directory.
 }
 }
+\examples{
+\dontshow{if (interactive()) withAutoprint(\{ # examplesIf}
+
+local_src_repo() |>
+    dir.create(recursive = TRUE)
+
+local_bin_repo() |>
+    dir.create(recursive = TRUE)
+\dontshow{\}) # examplesIf}
+}
