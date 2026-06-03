@@ -7,17 +7,16 @@
 minibioc_install(lib_path, bin_path, log_path, deps, dry.run, BPPARAM = NULL)
 }
 \arguments{
-\item{lib_path}{character() path where R package libraries are
+\item{lib_path}{\code{character(1)} path where R package libraries are
 stored.}
 
-\item{bin_path}{character() path where R package binaries are
+\item{bin_path}{\code{character(1)} path where R package binaries are
 stored.}
 
-\item{log_path}{character() path where R package binary build logs
+\item{log_path}{\code{character(1)} path where R package binary build logs
 are stored.}
 
-\item{deps}{package dependecy graph as computed by
-\code{.pkg_dependencies()}.}
+\item{deps}{package dependecy graph as computed by \code{.pkg_dependencies()}.}
 
 \item{BPPARAM}{A \code{BiocParallelParam} object specifying how each
 level of the dependency graph will be parallelized. Use
@@ -31,6 +30,7 @@ Please note that this command may charge your Google billing account,
 beware of the charges.
 }
 \examples{
+\dontshow{if (interactive()) withAutoprint(\{ # examplesIf}
 library(BiocParallel)
 bpparam <- MulticoreParam(
     workers = 22, stop.on.error = FALSE, jobname = "minibioc_binaries"
@@ -61,4 +61,5 @@ minibioc_install(
     log_path = local_bin_log(),
     deps = deps_new
 )
+\dontshow{\}) # examplesIf}
 }
