@@ -29,7 +29,7 @@ Create a CRAN style local repository
 ## with minibioc_base_dir()
 local_create_cran_bucket(
     image_name = "bioconductor_docker",
-    version = "3.21",
+    version = "3.24",
     bucket = minibioc_base_dir()
 )
 ## on k8s
