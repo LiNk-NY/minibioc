@@ -1,14 +1,25 @@
+#' Get or set the minibioc base repository directory
+#'
+#' @param ... Additional arguments passed to `minibioc_set_cache`.
+#' @param ask `logical(1)` Whether to prompt the user before creating the directory.
+#'
 #' @export
 minibioc_base_dir <- function(..., ask = interactive()) {
     getOption(
         "minibioc.base_repo_dir",
-        setCache(..., verbose = FALSE, ask = ask)
+        minibioc_set_cache(..., verbose = FALSE, ask = ask)
     )
 }
 
+#' @rdname minibioc_base_dir
+#'
+#' @param directory `character(1)` The directory path to use for cache/repository.
+#' @param verbose `logical(1)` Whether to print a message when setting the directory.
+#' @param ask `logical(1)` Whether to prompt the user before creating the directory.
+#'
 #' @importFrom BiocBaseUtils isScalarCharacter askUserYesNo
 #' @export
-setCache <- function(
+minibioc_set_cache <- function(
     directory = file.path(Sys.getenv("HOME"), "minibioc"),
     verbose = TRUE,
     ask = interactive()
@@ -25,7 +36,7 @@ setCache <- function(
             )
             isYES <- askUserYesNo(qtxt)
             if (!isYES)
-                stop("'minibioc' repository not created. Use 'setCache'")
+                stop("'minibioc' repository not created. Use 'minibioc_set_cache'")
         }
         dir.create(directory, recursive = TRUE, showWarnings = FALSE)
     }
