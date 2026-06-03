@@ -51,9 +51,9 @@
 #' for (pkg in bioc_sub_pkgs) {
 #'     build_source_package(
 #'         pkg = pkg,
-#'         lib_path = local_library(base_repo_dir = repo_dir),
-#'         bin_path = local_src_repo(base_repo_dir = repo_dir),
-#'         log_path = local_src_log(base_dir = repo_dir)
+#'         lib_path = local_library(),
+#'         bin_path = local_src_repo(),
+#'         log_path = local_src_log()
 #'     )
 #' }
 #'
