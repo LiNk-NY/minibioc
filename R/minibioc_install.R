@@ -23,18 +23,6 @@
 #' @returns `install_build_binary()` returns invisibly
 #'
 #' @examplesIf interactive()
-#' ver_name <-
-#'     BiocManager:::.version_field("BiocStatus") |> as.character()
-#' repo_file <- file.path(
-#'     local_src_repo(contrib.url = FALSE), "REPOSITORY"
-#' )
-#' if (!file.exists(repo_file))
-#'     download.file(
-#'         url = glue::glue(
-#'             "https://bioconductor.org/packages/{ver_name}/bioc/REPOSITORY"
-#'         ),
-#'         destfile = repo_file
-#'     )
 #' ## Point to source package directories
 #' source_base_dir <- "~/bioc"
 #' bioc_sub_pkgs <- file.path(
@@ -55,6 +43,21 @@
 #'         log_path = local_bin_log()
 #'     )
 #' }
+#'
+#' ## Create REPOSITORY files for the local source and binary repositories
+#' biocViews::write_REPOSITORY(
+#'     local_src_repo(contrib.url = FALSE),
+#'     contribPaths = c(
+#'         "source" = "src/contrib"
+#'     )
+#' )
+#'
+#' biocViews::write_REPOSITORY(
+#'     local_bin_repo(contrib.url = FALSE),
+#'     contribPaths = c(
+#'         "linux.binary" = "src/contrib"
+#'     )
+#' )
 #'
 #' ## Create PACKAGES, PACKAGES.gz, PACAKGES.rds for the local binary repository
 #' tools::write_PACKAGES(local_bin_repo(), addFiles = TRUE, verbose = TRUE)
