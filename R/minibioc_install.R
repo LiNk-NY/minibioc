@@ -1,4 +1,4 @@
-#' @name minibioc_single_package
+#' @name minibioc_single
 #'
 #' @title Install and create binaries for R packages
 #'
@@ -87,15 +87,16 @@ install_build_binary <-
     result
 }
 
-#' @rdname minibioc_single_package
+#' @rdname minibioc_single
 #'
-#' @examples
+#' @examplesIf interactive()
 #' build_source_package(
 #'     pkg = "~/bioc/BiocParallel",
 #'     lib_path = local_library(),
 #'     bin_path = local_src_repo(),
 #'     log_path = local_src_log()
 #' )
+#'
 #' @export
 build_source_package <-
     function(pkg, lib_path, bin_path, log_path)
@@ -143,29 +144,25 @@ build_source_package <-
 #'   Please note that this command may charge your Google billing account,
 #'   beware of the charges.
 #'
-#' @param lib_path character() path where R package libraries are
+#' @param lib_path `character(1)` path where R package libraries are
 #'     stored.
 #'
-#' @param bin_path character() path where R package binaries are
+#' @param bin_path `character(1)` path where R package binaries are
 #'     stored.
 #'
-#' @param log_path character() path where R package binary build logs
+#' @param log_path `character(1)` path where R package binary build logs
 #'     are stored.
 #'
-#' @param deps package dependecy graph as computed by
-#'     `.pkg_dependencies()`.
+#' @param deps package dependecy graph as computed by `.pkg_dependencies()`.
 #'
 #' @param BPPARAM A `BiocParallelParam` object specifying how each
 #'     level of the dependency graph will be parallelized. Use
 #'     `SerialParam()` for debugging
 #'
-#' @importFrom BiocParallel bpiterate bpprogressbar SerialParam
-#'   bpprogressbar<- SnowParam
+#' @importFrom BiocParallel bpiterate bpprogressbar SerialParam bpprogressbar<- SnowParam
+#' @importFrom futile.logger flog.error flog.info flog.appender appender.file appender.tee
 #'
-#' @importFrom futile.logger flog.error flog.info flog.appender
-#'     appender.file appender.tee
-#'
-#' @examples
+#' @examplesIf interactive()
 #' library(BiocParallel)
 #' bpparam <- MulticoreParam(
 #'     workers = 22, stop.on.error = FALSE, jobname = "minibioc_binaries"
@@ -196,6 +193,7 @@ build_source_package <-
 #'     log_path = local_bin_log(),
 #'     deps = deps_new
 #' )
+#'
 #' @export
 minibioc_install <-
     function(lib_path, bin_path, log_path, deps, dry.run, BPPARAM = NULL)
