@@ -74,6 +74,13 @@ local_create_cran_bucket <- function(
         file.rename(src, dest)
 }
 
+#' Sync build artifacts and logs to the local storage
+#'
+#' @param artifacts `list` A list of paths for build artifacts as returned by
+#'   `.bin_artifact_paths()`.
+#'
+#' @param repos `list` of repository paths as returned by internal `.repos()`.
+#'
 #' @export
 local_sync_artifacts <-  function(artifacts, repos) {
     log_file <- file.path(artifacts$log_path, 'minibioc_install.log')
