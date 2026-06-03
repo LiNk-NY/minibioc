@@ -44,27 +44,6 @@
 #'     )
 #' }
 #'
-#' ## Create REPOSITORY files for the local source and binary repositories
-#' biocViews::write_REPOSITORY(
-#'     local_src_repo(contrib.url = FALSE),
-#'     contribPaths = c(
-#'         "source" = "src/contrib"
-#'     )
-#' )
-#'
-#' biocViews::write_REPOSITORY(
-#'     local_bin_repo(contrib.url = FALSE),
-#'     contribPaths = c(
-#'         "linux.binary" = "src/contrib"
-#'     )
-#' )
-#'
-#' ## Create PACKAGES, PACKAGES.gz, PACAKGES.rds for the local binary repository
-#' tools::write_PACKAGES(local_bin_repo(), addFiles = TRUE, verbose = TRUE)
-#'
-#' ## Create PACKAGES, PACKAGES.gz, PACAKGES.rds for the local source repository
-#' tools::write_PACKAGES(local_src_repo(), addFiles = TRUE, verbose = TRUE)
-#'
 #' @export
 install_build_binary <-
     function(pkg, dry.run, lib_path, bin_path = local_bin_repo(), log_path)

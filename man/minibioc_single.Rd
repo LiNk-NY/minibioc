@@ -59,27 +59,6 @@ for (pkg in bioc_sub_pkgs) {
         log_path = local_bin_log()
     )
 }
-
-## Create REPOSITORY files for the local source and binary repositories
-biocViews::write_REPOSITORY(
-    local_src_repo(contrib.url = FALSE),
-    contribPaths = c(
-        "source" = "src/contrib"
-    )
-)
-
-biocViews::write_REPOSITORY(
-    local_bin_repo(contrib.url = FALSE),
-    contribPaths = c(
-        "linux.binary" = "src/contrib"
-    )
-)
-
-## Create PACKAGES, PACKAGES.gz, PACAKGES.rds for the local binary repository
-tools::write_PACKAGES(local_bin_repo(), addFiles = TRUE, verbose = TRUE)
-
-## Create PACKAGES, PACKAGES.gz, PACAKGES.rds for the local source repository
-tools::write_PACKAGES(local_src_repo(), addFiles = TRUE, verbose = TRUE)
 \dontshow{\}) # examplesIf}
 \dontshow{if (interactive()) withAutoprint(\{ # examplesIf}
 build_source_package(
