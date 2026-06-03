@@ -52,7 +52,7 @@ repository}
 Create a minibioc local repository
 }
 \examples{
-\dontrun{
+\dontshow{if (interactive()) withAutoprint(\{ # examplesIf}
 ## Point to source package directories
 source_base_dir <- "~/bioc"
 bioc_sub_pkgs <- file.path(
@@ -63,9 +63,13 @@ bioc_sub_pkgs <- file.path(
     )
 )
 
-library(ReleaseLaunch)
-## gitcreds::gitcreds_set()
-update_local_repos(repos_dir = source_base_dir, org = "Bioconductor")
+## Set up git credentials for private repositories if needed
+gitcreds::gitcreds_set()
+
+## Git sync local source repositories
+ReleaseLaunch::update_local_repos(
+    repos_dir = source_base_dir, org = "Bioconductor"
+)
 
 ## specify minibioc base repository directory
 repo_dir <- minibioc_base_dir()
@@ -89,6 +93,5 @@ minibioc_local(
     ultimate_pkg = "IRanges",
     exclude_pkgs = c("canceR", "ChemmineOB", "flowCore")
 )
-}
-
+\dontshow{\}) # examplesIf}
 }
