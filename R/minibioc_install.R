@@ -20,17 +20,19 @@
 #' @importFrom BiocManager install
 #' @importFrom futile.logger flog.appender flog.info flog.error appender.tee
 #'
-#' @returns `install_binary_package()` returns invisibly
+#' @returns `install_build_binary()` returns invisibly
 #'
-#' @examples
-#' install_binary_package(
+#' @examplesIf interactive()
+#' install_build_binary(
 #'     pkg = "BiocParallel",
+#'     dry.run = FALSE,
 #'     lib_path = local_library(),
 #'     bin_path = local_bin_repo(),
 #'     log_path = local_bin_log()
 #' )
+#'
 #' @export
-install_binary_package <-
+install_build_binary <-
     function(pkg, dry.run, lib_path, bin_path = local_bin_repo(), log_path)
 {
     .libPaths(c(lib_path, .libPaths()))
@@ -231,7 +233,7 @@ minibioc_install <-
     ## Iterator function
     iter <- .dependency_graph_iterator_factory(
         deps,
-        install_binary_package
+        install_build_binary
     )
 
     result <- bpiterate(
