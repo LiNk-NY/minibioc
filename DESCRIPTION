@@ -15,7 +15,8 @@ Imports:
     pkgbuild,
     RedisParam
 Suggests:
-    ReleaseLaunch
+    ReleaseLaunch,
+    BiocPkgTools
 Remotes:
     Bioconductor/ReleaseLaunch
 Encoding: UTF-8
