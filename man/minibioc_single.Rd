@@ -39,13 +39,26 @@ The package given by \code{pkg} is installed in the given library path
 }
 \examples{
 \dontshow{if (interactive()) withAutoprint(\{ # examplesIf}
-install_build_binary(
-    pkg = "BiocParallel",
-    dry.run = FALSE,
-    lib_path = local_library(),
-    bin_path = local_bin_repo(),
-    log_path = local_bin_log()
+## Point to source package directories
+source_base_dir <- "~/bioc"
+bioc_sub_pkgs <- file.path(
+    source_base_dir, c(
+        "SummarizedExperiment", "Biobase", "BiocBaseUtils",
+        "BiocGenerics", "DelayedArray", "GenomicRanges",
+        "IRanges", "S4Vectors"
+    )
 )
+
+## Install local binaries for a single package
+for (pkg in bioc_sub_pkgs) {
+    install_build_binary(
+        pkg = pkg,
+        dry.run = FALSE,
+        lib_path = local_library(),
+        bin_path = local_bin_repo(),
+        log_path = local_bin_log()
+    )
+}
 \dontshow{\}) # examplesIf}
 \dontshow{if (interactive()) withAutoprint(\{ # examplesIf}
 build_source_package(
