@@ -1,3 +1,9 @@
+#' Read a CRAN metadata RDS file
+#'
+#' @param rds_db `character(1)` The RDS file to read, either `"aliases.rds"` or `"rdxrefs.rds"`.
+#' @param base_repo_dir `character(1)` The base repository directory.
+#' @param version `character(1)` The version of the repository.
+#'
 #' @export
 read_CRAN_rds <- function(
     rds_db = c("aliases.rds", "rdxrefs.rds"),
@@ -10,10 +16,10 @@ read_CRAN_rds <- function(
         isScalarCharacter(base_repo_dir),
         is.package_version(version) || isScalarCharacter(version)
     )
-    rds_db_file <- .rds_file_path(rds_file, base_repo_dir, version)
+    rds_db_file <- .rds_file_path(rds_db, base_repo_dir, version)
     if (!file.exists(rds_db_file))
         stop(
-            rds_file, " file not found in ", version_repo_dir
+            rds_db, " file not found at ", rds_db_file
         )
     tools:::read_CRAN_object(
         local_type_area(
@@ -23,7 +29,7 @@ read_CRAN_rds <- function(
             uri = TRUE
         ),
         file.path(
-            "src/contrib/Meta", rds_file
+            "src/contrib/Meta", rds_db
         )
     )
 }
