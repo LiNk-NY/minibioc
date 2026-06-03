@@ -1,23 +1,32 @@
-#' Create a minibioc local repository
+#' @rdname minibioc
 #'
-#' @param src_pkg_dirs `character()` A vector of package names or their local
-#'   source directories (when buliding tarballs).
+#' @title Create a minibioc local repository
+#'
+#' @param bioc_version `character(1)` The version of the repository/Bioconductor
+#'   to create. By default, it is the value of `BiocManager::version()`.
 #'
 #' @param base_repo_dir `character(1)` The base directory where the CRAN-like
-#'   repository will be created.
+#'   repository will be created. By default, it is the value of `minibioc_base_dir()`.
 #'
-#' @param type `character(1)` The type of repository to create. Either "source"
-#'   or "binary". By default, it the value of `getOption("pkgType")`.
+#' @param build `character(1)` The build mode, one of `"_software"`, `"_update"`,
+#'   or `"_timings"`.
 #'
-#' @param version `character(1)` The version of the repository to create. By
-#'   default, it is the value of `BiocManager::version()`.
+#' @param depth0 `logical(1)` Whether to only install/build packages with zero
+#'   dependencies (plus the `ultimate_pkg` if specified). By default, `FALSE`.
 #'
-#' @param logs_path `character(1)` The path to the logs directory. By default,
-#'   it is the value of `local_bin_log()`.
+#' @param dry.run `logical(1)` Whether to run a dry run (not actually installing
+#'   the packages). By default, `TRUE`.
 #'
-#' @importFrom BiocBaseUtils isCharacter
+#' @param ultimate_pkg `character()` The last package in the queue to start
+#'   from especially useful after interrupted builds.
+#'
+#' @param exclude_pkgs `character()` Packages to exclude from the dependency
+#'   list.
+#'
+#' @importFrom BiocBaseUtils isScalarCharacter
 #'
 #' @examples
+#' \dontrun{
 #' ## Point to source package directories
 #' source_base_dir <- "~/bioc"
 #' bioc_sub_pkgs <- file.path(
@@ -35,34 +44,26 @@
 #' ## specify minibioc base repository directory
 #' repo_dir <- minibioc_base_dir()
 #'
-#' ## minibioc source
-#' repo_src_path <- create_mini_repo(
-#'     src_pkg_dirs = bioc_sub_pkgs,
-#'     base_repo_dir = repo_dir,
-#'     type = "source",
-#'     logs_path = local_src_log()
-#' )
-#' ## add repository to repos option
-#' options(repos = c(getOption("repos"), biocSrc = repo_src_path))
+#' ## Build local source package tarballs in the local source repository
+#' for (pkg in bioc_sub_pkgs) {
+#'     build_source_package(
+#'         pkg = pkg,
+#'         lib_path = local_library(base_repo_dir = repo_dir),
+#'         bin_path = local_src_repo(base_repo_dir = repo_dir),
+#'         log_path = local_src_log(base_dir = repo_dir)
+#'     )
+#' }
 #'
-#'
-#' ## minibioc binaries
-#' repo_bin_path <- create_mini_repo(
-#'     src_pkg_dirs = bioc_sub_pkgs,
-#'     base_repo_dir = repo_dir,
-#'     type = "binary",
-#'     logs_path = local_bin_log()
-#' )
-#' ## add repository to repos option
-#' options(repos = c(biocBin = repo_bin_path, getOption("repos")))
-#'
+#' ## Build local binaries and manage the local CRAN-like repository
 #' minibioc_local(
+#'     base_repo_dir = repo_dir,
 #'     build = "_software",
 #'     depth0 = TRUE,
-#'     dry.run = FALSE,
+#'     dry.run = TRUE,
 #'     ultimate_pkg = "IRanges",
 #'     exclude_pkgs = c("canceR", "ChemmineOB", "flowCore")
 #' )
+#' }
 #'
 #' @export
 minibioc_local <- function(
