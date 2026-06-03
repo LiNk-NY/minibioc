@@ -105,7 +105,7 @@ if (interactive()) {
 
     saveRDS(meta_rdxrefs_db, rdxrefs_db_file, version = 2)
 }
-if (interative()) {
+if (interactive()) {
     library(BiocPkgTools)
     bioc_sub <- pkgBiocDeps(
         "SummarizedExperiment", pkgType = "software",

@@ -179,7 +179,7 @@ build_meta_rdxrefs_db <-
 #'   directories.
 #'
 #' @examples
-#' if (interative()) {
+#' if (interactive()) {
 #'     library(BiocPkgTools)
 #'     bioc_sub <- pkgBiocDeps(
 #'         "SummarizedExperiment", pkgType = "software",
