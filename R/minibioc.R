@@ -6,10 +6,11 @@
 #'   to create. By default, it is the value of `BiocManager::version()`.
 #'
 #' @param base_repo_dir `character(1)` The base directory where the CRAN-like
-#'   repository will be created. By default, it is the value of `minibioc_base_dir()`.
+#'   repository will be created. By default, it is the value of
+#'   `minibioc_base_dir()`.
 #'
-#' @param build `character(1)` The build mode, one of `"_software"`, `"_update"`,
-#'   or `"_timings"`.
+#' @param build `character(1)` The build mode, one of `"_software"`,
+#'   `"_update"`, or `"_timings"`.
 #'
 #' @param depth0 `logical(1)` Whether to only install/build packages with zero
 #'   dependencies (plus the `ultimate_pkg` if specified). By default, `FALSE`.

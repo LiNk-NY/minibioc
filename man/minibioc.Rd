@@ -26,10 +26,11 @@ minibioc_clean(
 to create. By default, it is the value of \code{BiocManager::version()}.}
 
 \item{base_repo_dir}{\code{character(1)} The base directory where the CRAN-like
-repository will be created. By default, it is the value of \code{minibioc_base_dir()}.}
+repository will be created. By default, it is the value of
+\code{minibioc_base_dir()}.}
 
-\item{build}{\code{character(1)} The build mode, one of \code{"_software"}, \code{"_update"},
-or \code{"_timings"}.}
+\item{build}{\code{character(1)} The build mode, one of \code{"_software"},
+\code{"_update"}, or \code{"_timings"}.}
 
 \item{depth0}{\code{logical(1)} Whether to only install/build packages with zero
 dependencies (plus the \code{ultimate_pkg} if specified). By default, \code{FALSE}.}
