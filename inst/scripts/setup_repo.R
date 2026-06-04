@@ -52,13 +52,15 @@ extractVignettes(
 biocViews:::extractReadmes(
    reposRoot  = local_src_repo(contrib.url = FALSE),
    srcContrib = "src/contrib",
-   destDir    = local_src_repo(contrib.url = FALSE)
+   destDir    = file.path(
+       local_src_repo(contrib.url = FALSE),
+       "readme"
+   )
 )
 
 biocViews:::extractNEWS(
     reposRoot  = local_src_repo(contrib.url = FALSE),
-    srcContrib = "src/contrib",
-    destDir    = local_src_repo(contrib.url = FALSE)
+    srcContrib = "src/contrib"
 )
 
 biocViews:::extractINSTALLfiles(
