@@ -3,16 +3,49 @@ library(biocViews)
 
 ## Point to source package directories
 source_base_dir <- "~/bioc"
+
+## gitcreds::gitcreds_set()
+library(ReleaseLaunch)
+
+## update all repositories to latest checkout
+update_local_repos(
+    repos_dir = source_base_dir, org = "Bioconductor",
+    BPPARAM = BiocParallel::MulticoreParam(workers = 20L)
+)
+
+## create paths to local source packages
 bioc_sub_pkgs <- file.path(
     source_base_dir, c(
-        "SummarizedExperiment", "Biobase", "BiocBaseUtils",
-        "BiocGenerics", "DelayedArray", "GenomicRanges",
-        "IRanges", "S4Vectors"
+        "SummarizedExperiment",
+        "Biobase",
+        "BiocBaseUtils",
+        "BiocGenerics",
+        "DelayedArray",
+        "GenomicRanges",
+        "IRanges",
+        "S4Vectors"
     )
 )
 
-## Install local binaries for a single package
-for (pkg in bioc_sub_pkgs) {
+## install all dependencies for building
+remotes::install_local(
+    bioc_sub_pkgs,
+    dependencies = TRUE,
+    repos = BiocManager::repositories(),
+    force = TRUE
+)
+
+## install local sources for all packages
+for (pkg in bioc_sub_pkgs)
+    build_source_package(
+        pkg = pkg,
+        lib_path = local_library(),
+        bin_path = local_src_repo(),
+        log_path = local_src_log()
+    )
+
+## Install local binaries for all packages
+for (pkg in bioc_sub_pkgs)
     install_build_binary(
         pkg = pkg,
         dry.run = FALSE,
@@ -20,7 +53,6 @@ for (pkg in bioc_sub_pkgs) {
         bin_path = local_bin_repo(),
         log_path = local_bin_log()
     )
-}
 
 ## Create REPOSITORY files for the local source and binary repositories
 write_REPOSITORY(
