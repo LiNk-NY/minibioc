@@ -81,6 +81,15 @@ extractVignettes(
     srcContrib = "src/contrib"
 )
 
+biocViews::extractCitations(
+    reposRoot = local_src_repo(contrib.url = FALSE),
+    srcContrib = "src/contrib",
+    destDir = file.path(
+        local_src_repo(contrib.url = FALSE),
+        "citations"
+    )
+)
+
 biocViews:::extractReadmes(
    reposRoot  = local_src_repo(contrib.url = FALSE),
    srcContrib = "src/contrib",
