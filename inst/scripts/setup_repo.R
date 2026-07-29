@@ -18,7 +18,6 @@ bioc_sub_pkgs <- file.path(
     source_base_dir, c(
         "SummarizedExperiment",
         "Biobase",
-        "BiocBaseUtils",
         "BiocGenerics",
         "DelayedArray",
         "GenomicRanges",
