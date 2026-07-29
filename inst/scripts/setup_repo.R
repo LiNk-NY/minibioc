@@ -103,6 +103,15 @@ biocViews:::extractNEWS(
     srcContrib = "src/contrib"
 )
 
+biocViews::extractHTMLManuals(
+    reposRoot  = local_src_repo(contrib.url = FALSE),
+    srcContrib = "src/contrib",
+    destDir = file.path(
+        local_src_repo(contrib.url = FALSE),
+        "manuals"
+    )
+)
+
 biocViews:::extractINSTALLfiles(
     reposRoot  = local_src_repo(contrib.url = FALSE),
     srcContrib = "src/contrib",
