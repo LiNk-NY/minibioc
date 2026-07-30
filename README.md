@@ -17,6 +17,7 @@ Use `minibioc` when you need to:
 
 - Reproduce a subset of the Bioconductor repository locally
 - Prepare internal/offline package repositories for testing or deployment
+- Make testing changes to the [bioconductor.org](https://github.com/bioconductor/bioconductor.org) website easier by working against a local package repository
 - Build package binaries for a specific Bioconductor release
 - Manage incremental package build workflows and related logs/artifacts
 
