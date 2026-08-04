@@ -30,6 +30,7 @@ bioc_sub_pkgs <- file.path(
 remotes::install_local(
     bioc_sub_pkgs,
     dependencies = TRUE,
+    upgrade = "never",
     repos = BiocManager::repositories(),
     force = TRUE
 )
@@ -57,7 +58,7 @@ for (pkg in bioc_sub_pkgs)
 write_REPOSITORY(
     local_src_repo(contrib.url = FALSE),
     contribPaths = c(
-        "source" = "src/contrib"
+        source = "src/contrib"
     )
 )
 
@@ -65,7 +66,7 @@ write_REPOSITORY(
 write_REPOSITORY(
     local_bin_repo(contrib.url = FALSE),
     contribPaths = c(
-        "linux.binary" = "src/contrib"
+        linux.binary = "src/contrib"
     )
 )
 
