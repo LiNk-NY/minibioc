@@ -91,21 +91,21 @@ biocViews::extractCitations(
 )
 
 biocViews:::extractReadmes(
-   reposRoot  = local_src_repo(contrib.url = FALSE),
+   reposRoot = local_src_repo(contrib.url = FALSE),
    srcContrib = "src/contrib",
-   destDir    = file.path(
+   destDir = file.path(
        local_src_repo(contrib.url = FALSE),
        "readme"
    )
 )
 
 biocViews:::extractNEWS(
-    reposRoot  = local_src_repo(contrib.url = FALSE),
+    reposRoot = local_src_repo(contrib.url = FALSE),
     srcContrib = "src/contrib"
 )
 
 biocViews:::extractHTMLManuals(
-    reposRoot  = local_src_repo(contrib.url = FALSE),
+    reposRoot = local_src_repo(contrib.url = FALSE),
     srcContrib = "src/contrib",
     destDir = file.path(
         local_src_repo(contrib.url = FALSE),
@@ -114,9 +114,9 @@ biocViews:::extractHTMLManuals(
 )
 
 biocViews:::extractINSTALLfiles(
-    reposRoot  = local_src_repo(contrib.url = FALSE),
+    reposRoot = local_src_repo(contrib.url = FALSE),
     srcContrib = "src/contrib",
-    destDir    = local_src_repo(contrib.url = FALSE)
+    destDir = local_src_repo(contrib.url = FALSE)
 )
 
 write_VIEWS(
