@@ -53,7 +53,7 @@ for (pkg in bioc_sub_pkgs)
         log_path = local_bin_log()
     )
 
-## Create REPOSITORY files for the local source and binary repositories
+## Create REPOSITORY files for the local source repository
 write_REPOSITORY(
     local_src_repo(contrib.url = FALSE),
     contribPaths = c(
@@ -61,6 +61,7 @@ write_REPOSITORY(
     )
 )
 
+## Create REPOSITORY files for the local binary repository
 write_REPOSITORY(
     local_bin_repo(contrib.url = FALSE),
     contribPaths = c(
@@ -68,11 +69,11 @@ write_REPOSITORY(
     )
 )
 
-## Create PACKAGES, PACKAGES.gz, PACAKGES.rds for the local binary repository
-tools::write_PACKAGES(local_bin_repo(), addFiles = TRUE, verbose = TRUE)
-
 ## Create PACKAGES, PACKAGES.gz, PACAKGES.rds for the local source repository
 tools::write_PACKAGES(local_src_repo(), addFiles = TRUE, verbose = TRUE)
+
+## Create PACKAGES, PACKAGES.gz, PACAKGES.rds for the local binary repository
+tools::write_PACKAGES(local_bin_repo(), addFiles = TRUE, verbose = TRUE)
 
 ## create vignettes directory for the local source repository
 extractVignettes(
@@ -103,7 +104,7 @@ biocViews:::extractNEWS(
     srcContrib = "src/contrib"
 )
 
-biocViews::extractHTMLManuals(
+biocViews:::extractHTMLManuals(
     reposRoot  = local_src_repo(contrib.url = FALSE),
     srcContrib = "src/contrib",
     destDir = file.path(
